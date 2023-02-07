@@ -1,18 +1,33 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <img :src="image" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+<script setup lang="ts">
+import { onMounted, onUnmounted, ref } from "vue";
+import getImages from "./helper/getImages";
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+const images = ref([])
+const image = ref();
+
+function getRandom() {
+  const random = Math.floor(Math.random() * images.value.length);
+  return images.value[random];
+}
+
+let interval: number;
+
+onMounted(() => {
+  getImages().then((data: any[]) => images.value = data);
+
+  interval = setInterval(() => {
+    image.value = getRandom();
+
+  }, 3000);
+  console.log(interval);
 });
+
+onUnmounted(() => clearInterval(interval));
+
 </script>
 
 <style>
